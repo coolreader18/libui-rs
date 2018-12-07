@@ -104,7 +104,7 @@ impl UI {
     }
 
     /// Returns an `EventLoop`, a struct that allows you to step over iterations or events in the UI.
-    pub fn event_loop(&self) -> EventLoop {
+    pub fn event_loop(&self) -> EventLoop<'static> {
         unsafe { ui_sys::uiMainSteps() };
         return EventLoop {
             _pd: PhantomData,
@@ -136,10 +136,7 @@ impl UI {
     pub fn queue_main<'ctx, F: FnMut() + 'ctx>(&'ctx self, callback: F) {
         unsafe {
             let mut data: Box<Box<FnMut()>> = Box::new(Box::new(callback));
-            ui_sys::uiQueueMain(
-                None,
-                &mut *data as *mut Box<FnMut()> as *mut c_void,
-            );
+            ui_sys::uiQueueMain(None, &mut *data as *mut Box<FnMut()> as *mut c_void);
             mem::forget(data);
         }
     }
@@ -148,10 +145,7 @@ impl UI {
     pub fn on_should_quit<'ctx, F: FnMut() + 'ctx>(&'ctx self, callback: F) {
         unsafe {
             let mut data: Box<Box<FnMut()>> = Box::new(Box::new(callback));
-            ui_sys::uiOnShouldQuit(
-                None,
-                &mut *data as *mut Box<FnMut()> as *mut c_void,
-            );
+            ui_sys::uiOnShouldQuit(None, &mut *data as *mut Box<FnMut()> as *mut c_void);
             mem::forget(data);
         }
     }
