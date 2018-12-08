@@ -104,7 +104,7 @@ impl UI {
     }
 
     /// Returns an `EventLoop`, a struct that allows you to step over iterations or events in the UI.
-    pub fn event_loop(&self) -> EventLoop<'static> {
+    pub fn event_loop<'a>(&self) -> EventLoop<'a> {
         unsafe { ui_sys::uiMainSteps() };
         return EventLoop {
             _pd: PhantomData,
